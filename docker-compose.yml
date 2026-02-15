@@ -1,20 +1,34 @@
-version: "3.8"
+
 
 services:
+  mongodb:
+    image: mongo:7
+    container_name: internship-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
   backend:
-    build: ./backend
+    build: ./internship-backend
     container_name: internship-backend
     ports:
-      - "5000:5000"
+      - "4000:4000"
     env_file:
-      - ./backend/.env
+      - ./internship-backend/.env
+    depends_on:
+      - mongodb
     restart: always
 
   frontend:
-    build: ./frontend
+    build: ./internship-frontend
     container_name: internship-frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
     restart: always
+
+volumes:
+  mongo-data:
